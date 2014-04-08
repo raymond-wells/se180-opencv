@@ -1,0 +1,15 @@
+This is an experiment for my SE-180 report.  I will attempt to recognize mulitple objects in a variety of static images.  
+
+Video will not be considered for the purposes of this experiment.
+
+
+Many objects will be used.
+Training Sets:
+  Guitar, Tux, Codemonkey, Wolf, Clock, Laptop, Dragon, Car
+  Caltech 101 <- maybe
+
+The Feature Detection & Description algorithms compared will be:  FAST, ORB, V1-like (thank you Pinto)
+The Machine Learning algorithms used will be:  Linear SVM (OpenCV ml), Random Forest (R)
+
+ORB is used because it is not under patent, and has been shown to perform similarly to SURF & SIFT.
+
