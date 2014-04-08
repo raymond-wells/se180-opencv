@@ -8,6 +8,8 @@ Training Sets:
   Guitar, Tux, Codemonkey, Wolf, Clock, Laptop, Dragon, Car
   Caltech 101 <- maybe
 
+My training set can be found here: https://drive.google.com/file/d/0B2aDANPLLZA7eFNsdmZtdllMYmM/edit?usp=sharing
+
 The Feature Detection & Description algorithms compared will be:  FAST, ORB, V1-like (thank you Pinto)
 The Machine Learning algorithms used will be:  Linear SVM (OpenCV ml), Random Forest (R)
 
