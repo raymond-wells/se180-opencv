@@ -13,8 +13,9 @@ class TrainingSetBuilder:
         self.training_desc = training_desc
         self.vectorizer = vec
         self.output_file = output_file
-
     def build_training_set(self):
+        self.build_csv()
+    def build_csv(self):
         with open(self.output_file, 'w') as output_file:
             output = csv.writer(output_file)
             with open(self.training_desc, 'rb') as set_descriptor_file:
@@ -27,3 +28,5 @@ class TrainingSetBuilder:
                         row[1])
                     output.writerow([row[0]] +
                         self.vectorizer.vectorize(image_file))
+
+
