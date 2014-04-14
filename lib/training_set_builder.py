@@ -10,10 +10,10 @@ flatten = lambda arr: reduce(lambda x, y: ((isinstance(y, (list, tuple)) or
 
 
 class TrainingSetBuilder:
-    def __init__(self, training_desc, output_file, vec):
+    def __init__(self, training_desc, output_ext, vec):
         self.training_desc = training_desc
         self.vectorizer = vec
-        self.output_file = output_file
+        self.output_ext = output_ext
 
     def build_training_set(self):
         self.build_csv()
@@ -29,7 +29,7 @@ class TrainingSetBuilder:
                       path.dirname(path.abspath(self.training_desc)),
                       row[1])
                     desc = self.vectorizer.preprocess(image_file)
-                    orbfile = "data/training_set/" + row[1]. split('.')[0] + ".orb"
+                    orbfile = "data/training_set/" + row[1]. split('.')[0] + "." + self.output_ext
                     if desc==None:
                             print("Skipping "+orbfile+"because we had a hard" +
                               "time getting any features. :(")

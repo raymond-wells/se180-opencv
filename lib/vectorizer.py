@@ -6,9 +6,7 @@ class Vectorizer:
         self.algorithm = algorithm
 
     def vectorize(self, image_file):
-        image = cv2.imread(image_file, 0)
-        return self.algorithm.vectorize(image)
+        return self.algorithm.vectorize(image_file)
 
     def preprocess(self, image_file):
-        image = cv2.imread(image_file, 0)
-        return self.algorithm.preprocess(image)
+        return self.algorithm.preprocess(image_file)

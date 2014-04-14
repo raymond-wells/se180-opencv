@@ -1,6 +1,7 @@
 from orbalgorithm import ORBAlgorithm;
 from training_set_builder import TrainingSetBuilder;
 from vectorizer import Vectorizer;
+from algorithmfactory import AlgorithmFactory;
 import sys
 from os import path
 import os
@@ -9,14 +10,12 @@ import csv
 RECON_HELP = """
 usage: recon <operation> [...]
 
-Runs the recon program on a set of images.
+Runs the recon program on a set of images.  A random forest model is used to provide final classification.  
 
 Operations:
     buildset <training_definitions.csv>
-    train_svm <trainingset>                        Train SVM
-    train_R                                        Train Random Forest
-    test_opencv                                    Test SVM
-    test_R                                         Test Random Forest
+    train_R   <algo>                               Train Random Forest
+    test_R  <algo>                                 Test Random Forest
     classify_R <image.orb>                         Classify with Random Forest
 
     Misc:
@@ -31,28 +30,29 @@ The files for each model (.svm and .forest) are required BEFORE classifying.
 
         """
 
-def build_training_set(defname):
-    builder = TrainingSetBuilder(defname, "training_set.csv",
-        Vectorizer(ORBAlgorithm()))
+def build_training_set(defname, algo):
+    builder = TrainingSetBuilder(defname, algo,
+                                 Vectorizer(AlgorithmFactory().get(algo)()))
     builder.build_training_set()
 
 def classify_R(orb_file):
-    os.system("Rscript Rscripts/classify_R.R '"+orb_file+"'")
+    os.system("Rscript Rscripts/classify_R.R '"+orb_file+"' " + algo)
 
-def train_R():
-    os.system("Rscript Rscripts/train_R.R")
+def train_R(algo):
+    os.system("Rscript Rscripts/train_R.R " + algo)
 
 def vectorize(image, algo):
-    vec = Vectorizer(ORBAlgorithm())
+    fac = AlgorithmFactory()
+    vec = Vectorizer(fac.get(algo)())
     orbfile = path.join(path.dirname(image), path.splitext(
-        path.basename(image))[0]+".orb")
+        path.basename(image))[0]+"."+algo)
     with open(orbfile, "w") as output_file:
             writer = csv.writer(output_file)
             desc = vec.preprocess(image)
             for feat in desc:
                 writer.writerow(feat)
     print("Now processing with ruby...")
-    os.system("ruby lib/histogram.rb '" + orbfile + "'" )
+    os.system("ruby lib/histogram.rb '" + orbfile + "' "+algo )
 
 
 def main(argv = None):
@@ -61,19 +61,21 @@ def main(argv = None):
         return 1
 
     if argv[1] == "buildset":
-        build_training_set(argv[2])
+        build_training_set(argv[2], argv[3])
     elif argv[1] == "train":
         print ":( no training yet."
     elif argv[1]=="vectorize":
         vectorize(argv[2], argv[3])
     elif argv[1]=="train_R":
-        train_R()
+        train_R(argv[2])
     elif argv[1]=="classify_R":
         classify_R(argv[2])
-    elif argv[1]=="train_svm":
-        os.system("Rscript Rscripts/train_SVM.R")
-    elif argv[1]=="classify_svm":
-        os.system("Rscript Rscripts/classify_SVM.R '"+argv[2]+"'")
+    elif argv[1]=='test_R':
+        print("This has not yet been implemented.  Stay tuned folks!")
+#    elif argv[1]=="train_svm":
+#        os.system("Rscript Rscripts/train_SVM.R "+argv[2])
+#    elif argv[1]=="classify_svm":
+#        os.system("Rscript Rscripts/classify_SVM.R '"+argv[2]+"' " + argv[3])
 
 
 if __name__ == "__main__":

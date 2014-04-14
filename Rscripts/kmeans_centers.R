@@ -1,3 +1,4 @@
-comb <- read.csv("data/training_set/combined.csv")
-km <- kmeans(comb, 200, iter.max=25)
-write.csv(km$centers, file="data/centers.csv")
+algo <- commandArgs()[length(commandArgs())]
+comb <- read.csv(paste("data/training_set/combined_",algo,".csv"), header=FALSE)
+km <- kmeans(comb, 100)
+write.csv(km$centers, file=paste("data/centers",algo,".csv"))

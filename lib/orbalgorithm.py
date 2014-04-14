@@ -4,10 +4,10 @@ import cv2
 
 class ORBAlgorithm:
 
-    def vectorize(self, image):
+    def vectorize(self, image_file):
         orb = cv2.ORB()
-        kp = orb.detect(image, None)
-        kp, desc = orb.compute(image, kp)
+        image = cv2.imread(image_file, 0)
+        kp, desc = orb.detectAndCompute(image, None)
         # Now unroll the desc array...
         retval = []
         for y in desc:
@@ -15,8 +15,8 @@ class ORBAlgorithm:
                 retval.append(int(x))
         return retval
 
-    def preprocess(self, image):
+    def preprocess(self, image_file):
         orb = cv2.ORB()
-        kp = orb.detect(image, None)
-        kp, desc = orb.compute(image, kp)
+        image = cv2.imread(image_file, 0)
+        kp, desc = orb.detectAndCompute(image, None)
         return desc
