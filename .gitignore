@@ -1,3 +1,8 @@
 *~
 training_set
 *.csv
+*.orb
+*.hst
+*.pyc
+data_set
+data

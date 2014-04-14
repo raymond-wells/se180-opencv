@@ -14,3 +14,9 @@ class ORBAlgorithm:
             for x in y:
                 retval.append(int(x))
         return retval
+
+    def preprocess(self, image):
+        orb = cv2.ORB()
+        kp = orb.detect(image, None)
+        kp, desc = orb.compute(image, kp)
+        return desc

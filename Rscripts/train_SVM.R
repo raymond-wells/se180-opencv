@@ -1,0 +1,6 @@
+library(e1071)
+ts.data <- read.csv("data/training_set.csv", header=FALSE)
+print("Training SVM Model")
+ts.svmmodel <- svm(V1 ~ ., data=ts.data)
+save(ts.svmmodel, file="data/ts.svmmodel.rda")
+print(ts.svmmodel)

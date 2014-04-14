@@ -3,6 +3,7 @@ from training_set_builder import TrainingSetBuilder;
 from vectorizer import Vectorizer;
 import sys
 from os import path
+import os
 import csv
 
 RECON_HELP = """
@@ -13,9 +14,10 @@ Runs the recon program on a set of images.
 Operations:
     buildset <training_definitions.csv>
     train_svm <trainingset>                        Train SVM
-    train_R <trainingset>                          Train Random Forest
-    test_opencv <trainingset> <testset.csv>        Test SVM
-    test_R <trainingset> <testset.csv>             Test Random Forest
+    train_R                                        Train Random Forest
+    test_opencv                                    Test SVM
+    test_R                                         Test Random Forest
+    classify_R <image.orb>                         Classify with Random Forest
 
     Misc:
     vectorize  <image.png> <algo>                  Feature extract image
@@ -34,12 +36,24 @@ def build_training_set(defname):
         Vectorizer(ORBAlgorithm()))
     builder.build_training_set()
 
+def classify_R(orb_file):
+    os.system("Rscript Rscripts/classify_R.R '"+orb_file+"'")
+
+def train_R():
+    os.system("Rscript Rscripts/train_R.R")
+
 def vectorize(image, algo):
     vec = Vectorizer(ORBAlgorithm())
-    with open(path.join(path.dirname(image), path.splitext(
-        path.basename(image))[0]+".csv"), "w") as output_file:
+    orbfile = path.join(path.dirname(image), path.splitext(
+        path.basename(image))[0]+".orb")
+    with open(orbfile, "w") as output_file:
             writer = csv.writer(output_file)
-            writer.writerow(vec.vectorize(image))
+            desc = vec.preprocess(image)
+            for feat in desc:
+                writer.writerow(feat)
+    print("Now processing with ruby...")
+    os.system("ruby lib/histogram.rb '" + orbfile + "'" )
+
 
 def main(argv = None):
     if len(argv) < 2:
@@ -52,7 +66,14 @@ def main(argv = None):
         print ":( no training yet."
     elif argv[1]=="vectorize":
         vectorize(argv[2], argv[3])
-
+    elif argv[1]=="train_R":
+        train_R()
+    elif argv[1]=="classify_R":
+        classify_R(argv[2])
+    elif argv[1]=="train_svm":
+        os.system("Rscript Rscripts/train_SVM.R")
+    elif argv[1]=="classify_svm":
+        os.system("Rscript Rscripts/classify_SVM.R '"+argv[2]+"'")
 
 
 if __name__ == "__main__":
