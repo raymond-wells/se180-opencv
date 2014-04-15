@@ -35,7 +35,7 @@ def build_training_set(defname, algo):
                                  Vectorizer(AlgorithmFactory().get(algo)()))
     builder.build_training_set()
 
-def classify_R(orb_file):
+def classify_R(orb_file,algo):
     os.system("Rscript Rscripts/classify_R.R '"+orb_file+"' " + algo)
 
 def train_R(algo):
@@ -43,17 +43,22 @@ def train_R(algo):
 
 def vectorize(image, algo):
     fac = AlgorithmFactory()
-    vec = Vectorizer(fac.get(algo)())
+    vec = fac.get(algo)()
+    algo_ext = "." + algo
+    if (not vec.needs_bof):
+        algo_ext = "_" + algo + ".hst"
     orbfile = path.join(path.dirname(image), path.splitext(
-        path.basename(image))[0]+"."+algo)
+        path.basename(image))[0]+algo_ext)
     with open(orbfile, "w") as output_file:
             writer = csv.writer(output_file)
             desc = vec.preprocess(image)
-            for feat in desc:
-                writer.writerow(feat)
-    print("Now processing with ruby...")
-    os.system("ruby lib/histogram.rb '" + orbfile + "' "+algo )
-
+            if (vec.needs_bof):
+                for feat in desc:
+                    writer.writerow(feat)
+                print("Now processing with ruby...")
+                os.system("ruby lib/histogram.rb '" + orbfile + "' "+algo )
+            else:
+                writer.writerow(desc)
 
 def main(argv = None):
     if len(argv) < 2:
@@ -69,7 +74,7 @@ def main(argv = None):
     elif argv[1]=="train_R":
         train_R(argv[2])
     elif argv[1]=="classify_R":
-        classify_R(argv[2])
+        classify_R(argv[2],argv[3])
     elif argv[1]=='test_R':
         print("This has not yet been implemented.  Stay tuned folks!")
 #    elif argv[1]=="train_svm":

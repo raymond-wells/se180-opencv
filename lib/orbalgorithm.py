@@ -3,7 +3,8 @@ import cv2
 
 
 class ORBAlgorithm:
-
+    def __init__(self):
+        self.needs_bof = True
     def vectorize(self, image_file):
         orb = cv2.ORB()
         image = cv2.imread(image_file, 0)

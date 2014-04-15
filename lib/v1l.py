@@ -4,6 +4,7 @@ from copy import deepcopy
 from v1like import v1s
 class V1LikeAlgorithm:
     def __init__(self):
+        self.needs_bof = False
         ## Credit to Nicolas Pinto
         protocol = {
             # number of training examples
@@ -110,6 +111,7 @@ class V1LikeAlgorithm:
         # -- model is a list of (representation, featureselection)
         # that will be combine resulting in the final feature vector
         self.model = [(representation, featsel)]
+
     def preprocess(self, image_file):
         v1 = v1s.V1S()
         features = v1._generate_repr(image_file, self.model)

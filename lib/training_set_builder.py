@@ -37,8 +37,11 @@ class TrainingSetBuilder:
                         with open(orbfile, "w") as output_file:
                             output = csv.writer(output_file, delimiter=',',
                             quotechar='|')
-                            for feat in desc:
-                                output.writerow(feat)
+                            if (self.needs_bof):
+                                for feat in desc:
+                                    output.writerow(feat)
+                                else:
+                                    output.writerow(desc)
             os.system("cat data/training_set/*.orb" +
                     " > data/training_set/combined.csv")
             print ("Calculating Centers.... (R)")

@@ -275,8 +275,8 @@ class V1S(object):
             feat_l += [rephists(imga5, division, nfeatures)]
 
         # -- done !
-#        fvector = concatenate(feat_l)
-        return feat_l
+        fvector = concatenate(feat_l)
+        return fvector
 
     # -------------------------------------------------------------------------
     def _get_gabor_filters(self, params):
