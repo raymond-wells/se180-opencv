@@ -2,9 +2,8 @@
 import csv
 from os import path
 import os
-flatten = lambda arr: reduce(lambda x, y: ((isinstance(y, (list, tuple)) or
-    x.append(y)) and x.extend(flatten(y))) or x, arr, [])
-
+import scipy
+import numpy
 # Extracts features from an images in the training set and writes them to a
 # comma-delimeted format.
 
@@ -32,7 +31,7 @@ class TrainingSetBuilder:
                     desc = self.vectorizer.preprocess(image_file)
                     orbfile = "data/training_set/" + row[1]. split('.')[0] + "." + self.output_ext
                     if desc==None:
-                            print("Skipping "+orbfile+"because we had a hard" +
+                        print("Skipping "+orbfile+"because we had a hard" +
                               "time getting any features. :(")
                     else:
                         with open(orbfile, "w") as output_file:
@@ -41,8 +40,11 @@ class TrainingSetBuilder:
                             if (self.vectorizer.needs_bof):
                                 for feat in desc:
                                     output.writerow(feat)
-                                else:
-                                    output.writerow(desc)
+                            else:
+                                name = row[1].split('_')[0]
+                                lst = list(desc)
+                                lst.insert(0,name)
+                                output.writerow(lst)
             if (self.vectorizer.needs_bof):
                 os.system("cat data/training_set/*.orb" +
                           " > data/training_set/combined.csv")

@@ -1,8 +1,7 @@
 library(randomForest)
 algo <- commandArgs()[length(commandArgs())]
-
+print(paste("Training algorithm:",algo))
 ts.data <- read.csv(paste("data/training_set_",algo,".csv",sep=""), header=FALSE)
-
 if (algo=="v1l") {  # When BOF cannot be used, reduce the feature set with Boruta.
     print("Feature-happy algorithm detected...")
     print("Reducing dimensionality...")
