@@ -5,13 +5,12 @@ Video will not be considered for the purposes of this experiment.
 
 Many objects will be used.
 Training Sets:
-  Guitar, Tux, Codemonkey, Wolf, Clock, Laptop, Dragon, Car
-  Caltech 101 <- maybe
+  Caltech 101 cars, planes, motorbikes
 
 My training set can be found here: https://drive.google.com/file/d/0B2aDANPLLZA7eFNsdmZtdllMYmM/edit?usp=sharing
 
-The Feature Detection & Description algorithms compared will be:  FAST, ORB, V1-like (thank you Pinto)
-The Machine Learning algorithms used will be:  Linear SVM (OpenCV ml), Random Forest (R)
+The Feature Detection & Description algorithms compared will be: ORB, V1-like (credit to Nicholas Pinto), and V1-like segmented and used with feature bagging.
+The Machine Learning algorithm used will be Random Forest.
 
 ORB is used because it is not under patent, and has been shown to perform similarly to SURF & SIFT.
 

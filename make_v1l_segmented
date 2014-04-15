@@ -1,0 +1,39 @@
+#!/usr/bin/env ruby
+require './lib/histogram_lib.rb'
+require 'csv'
+
+class Array
+  def pad n, v
+    return self if (n-length) <= 0
+    [self + (n-length).times.map{v}].flatten
+  end
+end
+
+split_factor = (ARGV.shift or 128)
+split_factor = split_factor.to_i
+reduction = (ARGV.shift or 2) # number of reduction steps.
+reduction = reduction.to_i
+comb = CSV.open('data/training_set/combined_v1s.csv','w')
+IO::popen("find data/training_set -iname '*.v1l'",'r').each_line do |line|
+  fvector = CSV.read(line.strip).first
+  fvector = fvector.slice(1,fvector.length).map{|f|f.to_f}
+  next unless fvector
+  puts line
+  i = 0
+  reduction.times do
+    ary = []
+    fvector.slice(1,fvector.length).each_slice(2) do |sl|
+      if sl.length == 2
+        ary += [(sl[0]+sl[1])/2.0]
+      else
+        ary += [sl]
+      end
+    end
+    fvector = ary
+  end
+  
+  fvector.each_slice(split_factor) do |feat|
+    comb << feat.pad(split_factor,0)
+  end
+end
+comb.close
