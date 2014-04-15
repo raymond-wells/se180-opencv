@@ -31,8 +31,9 @@ The files for each model (.svm and .forest) are required BEFORE classifying.
         """
 
 def build_training_set(defname, algo):
+    fac = AlgorithmFactory()
     builder = TrainingSetBuilder(defname, algo,
-                                 Vectorizer(AlgorithmFactory().get(algo)()))
+                                 fac.get(algo)())
     builder.build_training_set()
 
 def classify_R(orb_file,algo):
