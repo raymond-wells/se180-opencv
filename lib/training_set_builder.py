@@ -28,6 +28,7 @@ class TrainingSetBuilder:
                     image_file = path.join(
                       path.dirname(path.abspath(self.training_desc)),
                       row[1])
+                    print("Processing " + row[1])
                     desc = self.vectorizer.preprocess(image_file)
                     orbfile = "data/training_set/" + row[1]. split('.')[0] + "." + self.output_ext
                     if desc==None:
@@ -37,16 +38,20 @@ class TrainingSetBuilder:
                         with open(orbfile, "w") as output_file:
                             output = csv.writer(output_file, delimiter=',',
                             quotechar='|')
-                            if (self.needs_bof):
+                            if (self.vectorizer.needs_bof):
                                 for feat in desc:
                                     output.writerow(feat)
                                 else:
                                     output.writerow(desc)
-            os.system("cat data/training_set/*.orb" +
-                    " > data/training_set/combined.csv")
-            print ("Calculating Centers.... (R)")
-            os.system("Rscript Rscripts/kmeans_centers.R")
-            print ("Now converting the training set (Ruby)...")
-            os.system("ruby lib/histogram_trainingset.rb")
+            if (self.vectorizer.needs_bof):
+                os.system("cat data/training_set/*.orb" +
+                          " > data/training_set/combined.csv")
+                print ("Calculating Centers.... (R)")
+                os.system("Rscript Rscripts/kmeans_centers.R")
+                print ("Now converting the training set (Ruby)...")
+                os.system("ruby lib/histogram_trainingset.rb")
+            else:
+                os.system("cat data/training_set/*."+self.output_ext +
+                          " > data/training_set_"+self.output_ext+".csv")
             print ("done!")
 

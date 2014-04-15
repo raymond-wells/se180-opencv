@@ -60,7 +60,6 @@ def vectorize(image, algo):
                 os.system("ruby lib/histogram.rb '" + orbfile + "' "+algo )
             else:
                 writer.writerow(desc)
-
 def main(argv = None):
     if len(argv) < 2:
         print RECON_HELP
