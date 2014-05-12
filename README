@@ -1,7 +1,3 @@
-This is an experiment for my SE-180 report.  I will attempt to recognize mulitple objects in a variety of static images.  
-
-Video will not be considered for the purposes of this experiment.
-
 
 Many objects will be used.
 Training Sets:
@@ -12,5 +8,55 @@ My training set can be found here: https://drive.google.com/file/d/0B2aDANPLLZA7
 The Feature Detection & Description algorithms compared will be: ORB, V1-like (credit to Nicholas Pinto), and V1-like segmented and used with feature bagging.
 The Machine Learning algorithm used will be Random Forest.
 
-ORB is used because it is not under patent, and has been shown to perform similarly to SURF & SIFT.
+ORB & BRISK are used because they are not under patent, you can recompile opencv yourself and get SIFT support if you want.
+
+SIFT is better for different sizes, but ORB seems to do better with more noise.  So depending upon your application it will be better.
+
+
+How to make a training set:
+
+Download images and extract them into a folder.
+Create a file "training_set_descriptor.csv" in the folder with this format:
+
+category_name, image_file.ext
+category_name, image_file.ext
+
+To build the training set, use:
+./imagerec buildset /path/to/your/training_set_definitions.csv <orb|brisk>
+
+Now, you'll want to train the model:
+./imagerec train_R <orb|brisk>
+
+You'll see something like this
+randomForest 4.6-7
+Type rfNews() to see new features/changes/bug fixes.
+[1] "Training algorithm: orb"
+[1] "Training Random Forest Model"
+[1] "Random forest stats:"
+
+Call:
+ randomForest(formula = V1 ~ ., data = ts.data, ntrees = 1500) 
+               Type of random forest: classification
+                     Number of trees: 500
+No. of variables tried at each split: 10
+
+        OOB estimate of  error rate: 44.44%
+Confusion matrix
+          airplane car motorbike class.error
+airplane         6   3         1   0.4000000
+car              2   1         4   0.8571429
+motorbike        2   0         8   0.2000000
+
+You can classify an image by doing these steps:
+./imagerec vectorize /path/to/new/image.ext <orb|brisk>
+./imagerec classify_R /path/to/new/image_<orb|brisk>.hst <orb|brisk>
+
+You may benefit from increasing the number of clusters:
+
+Open Rscripts/kmeans_centers.R
+And then change the numuber 100 on this line to whatever you want:
+km <- kmeans(comb, 100)
+
+And you're done!
+
 
