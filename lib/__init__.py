@@ -1,6 +1,4 @@
-from orbalgorithm import ORBAlgorithm;
 from training_set_builder import TrainingSetBuilder;
-from vectorizer import Vectorizer;
 from algorithmfactory import AlgorithmFactory;
 import sys
 from os import path
@@ -10,10 +8,10 @@ import csv
 RECON_HELP = """
 usage: recon <operation> [...]
 
-Runs the recon program on a set of images.  A random forest model is used to provide final classification.  
+Runs the recon program on a set of images.  A random forest model is used to provide final classification.
 
 Operations:
-    buildset <training_definitions.csv>
+    buildset <training_definitions.csv> <algo>
     train_R   <algo>                               Train Random Forest
     test_R  <algo>                                 Test Random Forest
     classify_R <image.orb>                         Classify with Random Forest
@@ -27,7 +25,9 @@ objectname, /path/to/image.png
 trainingset.csv: The output from buildset
 
 The files for each model (.svm and .forest) are required BEFORE classifying.
-
+Algorithms supported:  orb and brisk
+Use orb if you want speed and (a bit) less accuracy
+Use brisk if you want more accuracy, but less speed.
         """
 
 def build_training_set(defname, algo):
@@ -45,11 +45,8 @@ def train_R(algo):
 def vectorize(image, algo):
     fac = AlgorithmFactory()
     vec = fac.get(algo)()
-    algo_ext = "." + algo
-    if (not vec.needs_bof):
-        algo_ext = "_" + algo + ".hst"
     orbfile = path.join(path.dirname(image), path.splitext(
-        path.basename(image))[0]+algo_ext)
+        path.basename(image))[0]+'.orb')
     with open(orbfile, "w") as output_file:
             writer = csv.writer(output_file)
             desc = vec.preprocess(image)
@@ -57,7 +54,7 @@ def vectorize(image, algo):
                 for feat in desc:
                     writer.writerow(feat)
                 print("Now processing with ruby...")
-                os.system("ruby lib/histogram.rb '" + orbfile + "' "+algo )
+                os.system("ruby lib/histogram.rb '" + orbfile + "' orb")
             else:
                 writer.writerow(desc)
 def main(argv = None):

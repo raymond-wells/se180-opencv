@@ -12,7 +12,7 @@ class TrainingSetBuilder:
     def __init__(self, training_desc, output_ext, vec):
         self.training_desc = training_desc
         self.vectorizer = vec
-        self.output_ext = output_ext
+        self.output_ext = 'orb'
 
     def build_training_set(self):
         self.build_csv()
@@ -22,14 +22,14 @@ class TrainingSetBuilder:
             with open(self.training_desc, 'rb') as set_descriptor_file:
                 set_descriptor_reader = csv.reader(set_descriptor_file,
                   delimiter=',', quotechar='|')
-
+                num = 0
                 for row in set_descriptor_reader:
                     image_file = path.join(
                       path.dirname(path.abspath(self.training_desc)),
                       row[1])
                     print("Processing " + row[1])
                     desc = self.vectorizer.preprocess(image_file)
-                    orbfile = "data/training_set/" + row[1]. split('.')[0] + "." + self.output_ext
+                    orbfile = "data/training_set/"+row[0]+'_' + str(num) + '.orb'
                     if desc==None:
                         print("Skipping "+orbfile+"because we had a hard" +
                               "time getting any features. :(")
@@ -45,6 +45,7 @@ class TrainingSetBuilder:
                                 lst = list(desc)
                                 lst.insert(0,name)
                                 output.writerow(lst)
+                    num += 1
             if (self.vectorizer.needs_bof):
                 os.system("cat data/training_set/*.orb" +
                           " > data/training_set/combined.csv")

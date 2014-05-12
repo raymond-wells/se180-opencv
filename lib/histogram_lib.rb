@@ -18,7 +18,7 @@ class ComputeHistogram
   end
   private
   def compute_dist p1, p2
-      Math.sqrt(p1.zip(p2).map{|e| (e[0]-e[1])**2}.reduce(:+))
+      Math.sqrt(p1.zip(p2).map{|e| ((e[0] or 0)-(e[1] or 0))**2}.reduce(:+))
   end
 end
 

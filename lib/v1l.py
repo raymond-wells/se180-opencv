@@ -16,8 +16,8 @@ class V1LikeAlgorithm:
             # random seed
             'seed':1,
         }
-        
-        # -- representation 
+
+        # -- representation
         # some filter parameters
         norients = 16
         orients = [ o*N.pi/norients for o in xrange(norients) ]
@@ -27,7 +27,7 @@ class V1LikeAlgorithm:
 
         # dict with all representation parameters
         representation = {
-    
+
         # - preprocessing
             # prepare images before processing
             'preproc': {
@@ -59,7 +59,7 @@ class V1LikeAlgorithm:
                 'phases': phases,
                 # threshold (variance explained) for the separable convolution
                 'sep_threshold': .9,
-            },    
+            },
 
             # - simple non-linear activation
             'activ': {
@@ -68,7 +68,7 @@ class V1LikeAlgorithm:
                 # maximum output (clamp)
                 'maxout': 1,
             },
-            
+
             # - output local normalization
             'normout': {
                 # kernel shape of the local normalization
@@ -77,7 +77,7 @@ class V1LikeAlgorithm:
                 # if the vector's length is below, it doesn't get resized
                 'threshold': 1.0,
             },
-            
+
             # - dimension reduction
             'dimr': {
                 # kernel size of the local sum (2d slice)
@@ -86,21 +86,21 @@ class V1LikeAlgorithm:
                 'outshape': (30,30),
             },
         }
-        
+
         # -- featsel details what features you want to be included in the vector
         featsel = {
             # Include representation output ? True or False
             'output': True,
 
-            # Include grayscale values ? None or (height, width)    
+            # Include grayscale values ? None or (height, width)
             'input_gray': None,
             # Include color histograms ? None or nbins per color
             'input_colorhists': None,
-            # Include input norm histograms ? None or (division, nfeatures)    
+            # Include input norm histograms ? None or (division, nfeatures)
             'normin_hists': None,
             # Include filter output histograms ? None or (division, nfeatures)
             'filter_hists': None,
-            # Include activation output histograms ? None or (division, nfeatures)    
+            # Include activation output histograms ? None or (division, nfeatures)
             'activ_hists': None,
             # Include output norm histograms ? None or (division, nfeatures)
             'normout_hists': None,
@@ -116,5 +116,5 @@ class V1LikeAlgorithm:
         v1 = v1s.V1S()
         features = v1._generate_repr(image_file, self.model)
         return features
-        
-        
+
+
